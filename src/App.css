@@ -2,11 +2,27 @@
   margin: 40px 0 0 20px;
 }
 
-input {
-  margin-bottom: 20px;
-}
-
 p {
   display: inline-block;
   margin: 0;
 }
+
+button {
+  margin-bottom: 10px;
+}
+.Error-message {
+  color: red;
+}
+
+.Form-control {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+.Form-control input,select {
+  align-self: flex-start;
+}
+
+/* .Guests-block{
+  margin-top: 20px;
+} */
