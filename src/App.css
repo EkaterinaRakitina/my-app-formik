@@ -12,7 +12,11 @@ button {
 }
 .Error-message {
   color: red;
+  font-size: 12px;
 }
+/* errors {
+  color: red;
+} */
 
 .Form-control {
   display: flex;

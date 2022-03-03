@@ -1,6 +1,7 @@
 import React from "react";
 import { Formik, Field, Form, FieldArray, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import moment from 'moment';
 import "./App.css";
 
 function App() {
@@ -13,32 +14,48 @@ function App() {
   ));
 
   const validationSchema = Yup.object({
-    lastName: Yup.string().required("Required"),
+    lastName: Yup.string().required("Required").trim(),
     firstName: Yup.string().required("Required"),
     fullName: Yup.string(),
-    birthDate: Yup.date()
-      .required("Required")
-      .default(() => new Date()),
+    birthDay: Yup.string().test(
+      "DOB",
+      "You must be at least 18 years",
+      value => {
+        return moment().diff(moment(value),'years') >= 18;
+      }
+    ).required("Required"),
+    // birthDay: Yup.string().required("Required"),
     sex: Yup.string().required("Please select a gender").oneOf(genders),
     guests: Yup.array()
-      .of(
-        Yup.object({
-          name: Yup.string().required("Required"),
-          age: Yup.number().required("Required").min(18),
-        })
-      )
-      .min(1),
+    .of(
+      Yup.object().shape({
+        name: Yup.string().required("Required"),
+        age: Yup.number().required("Required").min(18, 'You must be at least 18 years'),
+      })
+    )
+    .min(1, 'Should be minimum 1 guest'),
+
+
+    // guests: Yup.array()
+    //   .of(
+    //     Yup.object({
+    //       name: Yup.string().required("Required"),
+    //       age: Yup.number().required("Required").min(18, 'Should be min 18 years old'),
+    //     })
+    //   )
+    //   .min(1, 'Should be minimum 1 guest'),
   });
 
   const initialValues = {
     lastName: "",
     firstName: "",
     fullName: "",
-    birthDate: "",
+    birthDay: "",
     sex: "",
     guests: [{ name: "Ivan", age: 18 }],
   };
-
+  {console.log(initialValues)}
+  
   return (
     <div className="App">
       <div>
@@ -54,28 +71,33 @@ function App() {
             }, 500);
             {console.log(values)}
           }}
-        >
+          >
           {(props) => (
             <Form>
               <div className="Form-control">
                 <label htmlFor="lastName">Last name: </label>
                 <Field type="text" name="lastName" id="lastName" />
                 <ErrorMessage
-                  className="Error-message"
                   name="lastName"
-                ></ErrorMessage>
+                >{msg => <div className="Error-message">{msg}</div>}</ErrorMessage>
               </div>
               <div className="Form-control">
                 <label htmlFor="firstName">First name: </label>
                 <Field type="text" name="firstName" id="firstName" />
+                <ErrorMessage name="firstName">{msg => <div className="Error-message">{msg}</div>}</ErrorMessage>
+                {/* {props.errors.firstName && props.touched.firstName ? (
+                  <div>{props.errors.firstName}</div>
+                  ) : null} */}
               </div>
               <div className="Form-control">
                 <label htmlFor="fullName">Full name: </label>
                 <Field type="text" name="fullName" id="fullName" />
+                <ErrorMessage name="fullName">{msg => <div className="Error-message">{msg}</div>}</ErrorMessage>
               </div>
               <div className="Form-control">
-                <label htmlFor="birthDate">Birth date: </label>
-                <Field type="date" name="birthDate" id="birthDate" />
+                <label htmlFor="birthDay">Birth date: </label>
+                <Field type="date" name="birthDay" id="birthDay" />
+                <ErrorMessage name="birthDay">{msg => <div className="Error-message">{msg}</div>}</ErrorMessage>
               </div>
               <div className="Form-control">
                 <label htmlFor="sex">Sex: </label>
@@ -83,6 +105,7 @@ function App() {
                   <option value={""}>Select</option>
                   {chooseOption}
                 </Field>
+                <ErrorMessage name="sex">{msg => <div className="Error-message">{msg}</div>}</ErrorMessage>
               </div>
               <FieldArray
                 name="guests"
@@ -93,16 +116,19 @@ function App() {
                       ? props.values.guests.map((guest, index) => (
                           <div key={index}>
                             <Field name={`guests.${index}.name`} />
+                            <ErrorMessage name={`guests.${index}.name`}>{msg => <div className="Error-message">{msg}</div>}</ErrorMessage>
                             <Field name={`guests.${index}.age`} />
+                            <ErrorMessage name={`guests.${index}.age`}>{msg => <div className="Error-message">{msg}</div>}</ErrorMessage>
                             <button
                               type="button"
                               onClick={() => arrayHelpers.remove(index)}
                             >
                               -
                             </button>
+                            {/* {console.log(props.values.guests)} */}
                           </div>
                         ))
-                      : null}
+                        : null}
                     <button
                       type="button"
                       onClick={() => arrayHelpers.push({ name: "", age: "" })}
@@ -113,6 +139,7 @@ function App() {
                 )}
               />
               <button type="submit">Submit</button>
+              <ErrorMessage name="guests">{msg => typeof msg === "string" ? <div className="Error-message">{msg}</div> : null}</ErrorMessage>
             </Form>
           )}
         </Formik>
