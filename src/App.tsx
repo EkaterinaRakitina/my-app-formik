@@ -2,6 +2,7 @@ import React from "react";
 import { Formik, Field, Form, FieldArray, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import moment from 'moment';
+import CustomInput from "./Components/CustomInput";
 import "./App.css";
 
 function App() {
@@ -24,7 +25,6 @@ function App() {
         return moment().diff(moment(value),'years') >= 18;
       }
     ).required("Required"),
-    // birthDay: Yup.string().required("Required"),
     sex: Yup.string().required("Please select a gender").oneOf(genders),
     guests: Yup.array()
     .of(
@@ -34,8 +34,6 @@ function App() {
       })
     )
     .min(1, 'Should be minimum 1 guest'),
-
-
     // guests: Yup.array()
     //   .of(
     //     Yup.object({
@@ -46,6 +44,20 @@ function App() {
     //   .min(1, 'Should be minimum 1 guest'),
   });
 
+  interface Guest { 
+    name: string, 
+    age: number 
+  }
+
+  interface FormFields {
+    lastName: string,
+    firstName: string,
+    fullName: string,
+    birthDay: string,
+    sex: string,
+    guests: Guest[]
+  }
+
   const initialValues = {
     lastName: "",
     firstName: "",
@@ -54,13 +66,14 @@ function App() {
     sex: "",
     guests: [{ name: "Ivan", age: 18 }],
   };
+
   {console.log(initialValues)}
   
   return (
     <div className="App">
       <div>
         <h1>My Form</h1>
-        <Formik
+        <Formik<FormFields>
           initialValues={initialValues}
           validationSchema={validationSchema}
           // onSubmit={values => console.log(values)}
@@ -74,20 +87,14 @@ function App() {
           >
           {(props) => (
             <Form>
-              <div className="Form-control">
-                <label htmlFor="lastName">Last name: </label>
-                <Field type="text" name="lastName" id="lastName" />
-                <ErrorMessage
-                  name="lastName"
-                >{msg => <div className="Error-message">{msg}</div>}</ErrorMessage>
-              </div>
-              <div className="Form-control">
+              <CustomInput<FormFields> name="lastName"/>
+              
+              <button type="submit">Submit</button>
+
+              {/* <div className="Form-control">
                 <label htmlFor="firstName">First name: </label>
                 <Field type="text" name="firstName" id="firstName" />
                 <ErrorMessage name="firstName">{msg => <div className="Error-message">{msg}</div>}</ErrorMessage>
-                {/* {props.errors.firstName && props.touched.firstName ? (
-                  <div>{props.errors.firstName}</div>
-                  ) : null} */}
               </div>
               <div className="Form-control">
                 <label htmlFor="fullName">Full name: </label>
@@ -125,7 +132,6 @@ function App() {
                             >
                               -
                             </button>
-                            {/* {console.log(props.values.guests)} */}
                           </div>
                         ))
                         : null}
@@ -139,7 +145,7 @@ function App() {
                 )}
               />
               <button type="submit">Submit</button>
-              <ErrorMessage name="guests">{msg => typeof msg === "string" ? <div className="Error-message">{msg}</div> : null}</ErrorMessage>
+              <ErrorMessage name="guests">{msg => typeof msg === "string" ? <div className="Error-message">{msg}</div> : null}</ErrorMessage> */}
             </Form>
           )}
         </Formik>
