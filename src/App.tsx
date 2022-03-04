@@ -1,5 +1,5 @@
 import React from "react";
-import { Formik, Field, Form, FieldArray, ErrorMessage } from "formik";
+import { Formik, Form, Field, ErrorMessage, FieldArray } from "formik";
 import { Grid, Button } from "@material-ui/core";
 import * as Yup from "yup";
 import moment from "moment";
@@ -7,45 +7,36 @@ import CustomInput from "./Components/CustomInput";
 import CustomSelect from "./Components/CustomSelect";
 import "./App.css";
 
-function App() {
-  const genders = ["Male", "Female", "Other"];
-
-  const chooseOption = genders.map((gender, key) => (
-    <option value={gender} key={key}>
-      {gender}
-    </option>
-  ));
-
+const App = () => {
+  
   const validationSchema = Yup.object({
     lastName: Yup.string().required("Required").trim(),
     firstName: Yup.string().required("Required"),
     fullName: Yup.string(),
     birthDay: Yup.string()
-      .test("DOB", "You must be at least 18 years", (value) => {
-        return moment().diff(moment(value), "years") >= 18;
-      })
-      .required("Required"),
-    sex: Yup.string().required("Please select a gender").oneOf(genders),
+    .test("DOB", "You must be at least 18 years", (value) => {
+      return moment().diff(moment(value), "years") >= 18;
+    })
+    .required("Required"),
+    sex: Yup.string().required("Please select a gender"),
     guests: Yup.array()
-      .of(
-        Yup.object().shape({
-          name: Yup.string().required("Required"),
-          age: Yup.number()
-            .required("Required")
+    .of(
+      Yup.object().shape({
+        name: Yup.string().required("Required"),
+        age: Yup.number()
+        .required("Required")
             .min(18, "You must be at least 18 years"),
         })
-      )
+        )
       .min(1, "Should be minimum 1 guest"),
-    // guests: Yup.array()
-    //   .of(
-    //     Yup.object({
-    //       name: Yup.string().required("Required"),
-    //       age: Yup.number().required("Required").min(18, 'Should be min 18 years old'),
-    //     })
-    //   )
-    //   .min(1, 'Should be minimum 1 guest'),
   });
 
+  const options = [
+    { value: "Male", label: "Male" },
+    { value: "Female", label: "Female" },
+    { value: "Other", label: "Other" },
+  ];
+  
   interface Guest {
     name: string;
     age: number;
@@ -69,10 +60,6 @@ function App() {
     guests: [{ name: "Ivan", age: 18 }],
   };
 
-  {
-    console.log(initialValues);
-  }
-
   return (
     <div className="App">
       <div>
@@ -83,38 +70,99 @@ function App() {
           onSubmit={(values) => console.log(values)}
         >
           {(props) => (
-            <Grid container spacing={3}>
-                <Form>
+            <Form>
+              <Grid container spacing={2} className="Container">
+                <Grid item xs={12}>
                   <CustomInput<FormFields> name="lastName" type="text" />
+                </Grid>
+                <Grid item xs={12}>
                   <CustomInput<FormFields> name="firstName" type="text" />
+                </Grid>
+                <Grid item xs={12}>
                   <CustomInput<FormFields> name="fullName" type="text" />
-                  <CustomInput<FormFields> name="birthDay" type="date" />
-                  <CustomSelect<FormFields> name="sex" />
+                </Grid>
 
+                <Grid item xs={12}>
+                  <CustomInput<FormFields> name="birthDay" type="date" />
+                </Grid>
+
+                <Grid item xs={12}>
+                  <CustomSelect<FormFields>
+                    name="sex"
+                    options={options}
+                    label="Sex"
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <FieldArray
+                    name="guests"
+                    render={(arrayHelpers) => (
+                      <div className="Guests-block">
+                        <h3>Add guests</h3>
+                        {props.values.guests.length > 0
+                          ? props.values.guests.map((guest, index) => (
+                              <div key={index}>
+                                <Field name={`guests.${index}.name`} />
+                                <ErrorMessage name={`guests.${index}.name`}>
+                                  {(msg) => (
+                                    <div className="Error-message">{msg}</div>
+                                  )}
+                                </ErrorMessage>
+                                <Field name={`guests.${index}.age`} />
+                                <ErrorMessage name={`guests.${index}.age`}>
+                                  {(msg) => (
+                                    <div className="Error-message">{msg}</div>
+                                  )}
+                                </ErrorMessage>
+                                <button
+                                  type="button"
+                                  onClick={() => arrayHelpers.remove(index)}
+                                >
+                                  -
+                                </button>
+                              </div>
+                            ))
+                          : null}
+                        <Button
+                          variant="contained"
+                          type="button"
+                          onClick={() =>
+                            arrayHelpers.push({ name: "", age: "" })
+                          }
+                        >
+                          Add guest
+                        </Button>
+                      </div>
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={12}>
                   <Button variant="contained" color="primary" type="submit">
                     Submit
                   </Button>
-                </Form>
-            </Grid>
+                </Grid>
+              </Grid>
+            </Form>
           )}
         </Formik>
       </div>
     </div>
   );
-}
+};
 
 export default App;
 
+
+
+
+
+
+
+
+
+
 {
   /* 
-<div className="Form-control">
-  <label htmlFor="sex">Sex: </label>
-  <Field as="select" name="sex" id="sex">
-    <option value={""}>Select</option>
-    {chooseOption}
-  </Field>
-  <ErrorMessage name="sex">{msg => <div className="Error-message">{msg}</div>}</ErrorMessage>
-</div>
 <FieldArray
   name="guests"
   render={(arrayHelpers) => (

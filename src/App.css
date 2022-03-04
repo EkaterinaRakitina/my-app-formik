@@ -1,6 +1,10 @@
 .App {
   margin: 40px 0 0 20px;
 }
+.Container {
+  flex-direction: column;
+  align-items: baseline;
+}
 
 p {
   display: inline-block;
@@ -11,12 +15,9 @@ button {
   margin-bottom: 10px;
 }
 .Error-message {
-  color: red;
+  color: #f44336;
   font-size: 12px;
 }
-/* errors {
-  color: red;
-} */
 
 .Form-control {
   display: flex;
@@ -26,7 +27,3 @@ button {
 .Form-control input,select {
   align-self: flex-start;
 }
-
-/* .Guests-block{
-  margin-top: 20px;
-} */

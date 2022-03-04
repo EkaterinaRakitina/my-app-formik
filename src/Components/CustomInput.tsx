@@ -9,7 +9,7 @@ interface IProps {
 
 const CustomInput = <T, >({ name, type }: IProps) => {
   const [field, meta, helpers] = useField<T>(name);
-  
+  // console.log(meta);
 
   return (
     <>
