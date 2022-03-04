@@ -1,24 +1,29 @@
 import React from "react";
-import { ErrorMessage, useField } from "formik";
+import { useField } from "formik";
 import TextField from "@material-ui/core/TextField";
 
-interface Props {
+interface IProps {
   name: string;
+  type: string;
 }
 
-const CustomInput = <T, >({ name }: Props) => {
+const CustomInput = <T, >({ name, type }: IProps) => {
   const [field, meta, helpers] = useField<T>(name);
+  
 
   return (
     <>
       <TextField 
-        {...field}
+        {...field} 
+        label={name} 
+        type={type}
+        variant="outlined"
+        InputLabelProps={{
+          shrink: true,
+        }}
         helperText={meta.touched && meta.error}
         error={meta.touched && !!meta.error}
       />
-      {/* <ErrorMessage name={name}>
-        {(msg) => <div className="Error-message">{msg}</div>}
-      </ErrorMessage> */}
     </>
   );
 };
