@@ -1,13 +1,15 @@
 import React from "react";
 import { useField } from "formik";
-import TextField from "@material-ui/core/TextField";
+import TextField, { TextFieldProps } from "@material-ui/core/TextField";
 
 interface IProps {
   name: string;
   type: string;
 }
 
-const CustomInput = <T, >({ name, type }: IProps) => {
+type CustomInputProps = IProps & TextFieldProps;
+
+const CustomInput = <T, >({ name, type, ...props }: CustomInputProps) => {
   const [field, meta, helpers] = useField<T>(name);
   console.log(meta);
 
@@ -24,6 +26,7 @@ const CustomInput = <T, >({ name, type }: IProps) => {
         }}
         helperText={meta.touched && meta.error}
         error={meta.touched && !!meta.error}
+        {...props}
       />
     </>
   );

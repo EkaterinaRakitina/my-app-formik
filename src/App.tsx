@@ -100,8 +100,8 @@ const App = () => {
                         {props.values.guests.length > 0
                           ? props.values.guests.map((guest, index) => (
                               <div key={index} className="Guests-block">
-                                <CustomInput<FormFields> name={`guests.${index}.name`} type="text"/>
-                                <CustomInput<FormFields> name={`guests.${index}.age`} type="number" />
+                                <CustomInput<FormFields> name={`guests.${index}.name`} label="Name" type="text"/>
+                                <CustomInput<FormFields> name={`guests.${index}.age`} label="Age" type="number" />
                                 <Button
                                   variant="contained"
                                   type="button"
@@ -126,6 +126,7 @@ const App = () => {
                       </div>
                     )}
                   />
+                  <ErrorMessage name="guests">{msg => typeof msg === "string" ? <span className="Error-message">{msg}</span> : null}</ErrorMessage>
                 </Grid>
                 <Grid item xs={12}>
                   <Button variant="contained" color="primary" type="submit">
