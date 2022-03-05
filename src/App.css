@@ -27,3 +27,9 @@ button {
 .Form-control input,select {
   align-self: flex-start;
 }
+.Guests-block {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 500px;
+}

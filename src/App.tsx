@@ -36,7 +36,7 @@ const App = () => {
     { value: "Female", label: "Female" },
     { value: "Other", label: "Other" },
   ];
-  
+
   interface Guest {
     name: string;
     age: number;
@@ -81,11 +81,9 @@ const App = () => {
                 <Grid item xs={12}>
                   <CustomInput<FormFields> name="fullName" type="text" />
                 </Grid>
-
                 <Grid item xs={12}>
                   <CustomInput<FormFields> name="birthDay" type="date" />
                 </Grid>
-
                 <Grid item xs={12}>
                   <CustomSelect<FormFields>
                     name="sex"
@@ -97,29 +95,22 @@ const App = () => {
                   <FieldArray
                     name="guests"
                     render={(arrayHelpers) => (
-                      <div className="Guests-block">
+                      <div >
                         <h3>Add guests</h3>
                         {props.values.guests.length > 0
                           ? props.values.guests.map((guest, index) => (
-                              <div key={index}>
-                                <Field name={`guests.${index}.name`} />
-                                <ErrorMessage name={`guests.${index}.name`}>
-                                  {(msg) => (
-                                    <div className="Error-message">{msg}</div>
-                                  )}
-                                </ErrorMessage>
-                                <Field name={`guests.${index}.age`} />
-                                <ErrorMessage name={`guests.${index}.age`}>
-                                  {(msg) => (
-                                    <div className="Error-message">{msg}</div>
-                                  )}
-                                </ErrorMessage>
-                                <button
+                              <div key={index} className="Guests-block">
+                                <CustomInput<FormFields> name={`guests.${index}.name`} type="text"/>
+                                <CustomInput<FormFields> name={`guests.${index}.age`} type="number" />
+                                <Button
+                                  variant="contained"
                                   type="button"
+                                  size='small'
+                                  fullWidth={false}
                                   onClick={() => arrayHelpers.remove(index)}
                                 >
                                   -
-                                </button>
+                                </Button>
                               </div>
                             ))
                           : null}
@@ -151,48 +142,3 @@ const App = () => {
 };
 
 export default App;
-
-
-
-
-
-
-
-
-
-
-{
-  /* 
-<FieldArray
-  name="guests"
-  render={(arrayHelpers) => (
-    <div className="Guests-block">
-      <h3>Add guests</h3>
-      {props.values.guests.length > 0
-        ? props.values.guests.map((guest, index) => (
-            <div key={index}>
-              <Field name={`guests.${index}.name`} />
-              <ErrorMessage name={`guests.${index}.name`}>{msg => <div className="Error-message">{msg}</div>}</ErrorMessage>
-              <Field name={`guests.${index}.age`} />
-              <ErrorMessage name={`guests.${index}.age`}>{msg => <div className="Error-message">{msg}</div>}</ErrorMessage>
-              <button
-                type="button"
-                onClick={() => arrayHelpers.remove(index)}
-              >
-                -
-              </button>
-            </div>
-          ))
-          : null}
-      <button
-        type="button"
-        onClick={() => arrayHelpers.push({ name: "", age: "" })}
-      >
-        Add guest
-      </button>
-    </div>
-  )}
-/>
-<button type="submit">Submit</button>
-<ErrorMessage name="guests">{msg => typeof msg === "string" ? <div className="Error-message">{msg}</div> : null}</ErrorMessage> */
-}

@@ -9,7 +9,7 @@ interface IProps {
 
 const CustomInput = <T, >({ name, type }: IProps) => {
   const [field, meta, helpers] = useField<T>(name);
-  // console.log(meta);
+  console.log(meta);
 
   return (
     <>
@@ -17,6 +17,7 @@ const CustomInput = <T, >({ name, type }: IProps) => {
         {...field} 
         label={name} 
         type={type}
+        margin='normal'
         variant="outlined"
         InputLabelProps={{
           shrink: true,
